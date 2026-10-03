@@ -1,0 +1,171 @@
+[
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "SMFI M'lanum Flessibile Svil. Italia",
+    "ticker": "0P0001563A.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB Carmignac Strategic Sel SA",
+    "ticker": "0P0000ZJKG.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB MS Global Selection SHA",
+    "ticker": "0P0000CN9W.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB Global High Yield SA",
+    "ticker": "0P00000S5S.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB Global Leaders LA",
+    "ticker": "0P0001HH0V.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB Innovative Thematic Opp. LA",
+    "ticker": "0P0001EU36.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "M. Obbligazionario Italia IIPIR LA EUR",
+    "ticker": "0P0001JWW3.F"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB Emerging Markets Coll. LA",
+    "isin": "IE0005380518",
+    "url": "https://www.borsaitaliana.it/borsa/fondi/dettaglio/2TOPEMA.html"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "BTP VAL10/28 S-U CUM",
+    "isin": "IT0005565392",
+    "url": "https://www.borsaitaliana.it/borsa/obbligazioni/mot/btp/scheda/IT0005565400-MOTX.html?lang=it"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "C EXOP 25/12SA10/31",
+    "isin": "IT0006770652",
+    "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/IT0006770652-ETLX.html?lang=it"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "XS2911464654 Certificate",
+    "isin": "XS2911464654",
+    "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/XS2911464654-ETLX.html?lang=it"
+  },
+  {
+    "bank": "mm",
+    "currency": "EUR",
+    "name": "MBB MS Global Selection LA",
+    "isin": "0P0000CN9X.F",
+    "url": "",
+    "deltahedge_isin": "IE00B2NLMT64"
+  },
+  {
+    "name": "Lux Pictet Future Trends",
+    "bank": "IG",
+    "isin": "LU1130035709",
+    "ticker": "0P00014ZKN.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Pictet Security",
+    "bank": "IG",
+    "isin": "LU0270905242",
+    "ticker": "0P00006SYZ.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Pictet Global Megatrend",
+    "bank": "IG",
+    "isin": "LU0391944815",
+    "ticker": "0P0000I3XF.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "MS Global Brands",
+    "bank": "IG",
+    "isin": "LU0119620416",
+    "ticker": "MSJD.F",
+    "currency": "USD"
+  },
+  {
+    "name": "Lux Im Pictet Asian Equities",
+    "bank": "IG",
+    "isin": "LU0255273566",
+    "ticker": "0P000069HS.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Lux Im Flexible Glob Equities",
+    "bank": "IG",
+    "isin": "LU0255290578",
+    "ticker": "0P000069DB.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Pictet Global Environmental Opp. (Geo)",
+    "bank": "za",
+    "isin": "LU0503631557",
+    "ticker": "0P0000NV7K.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Pimco MLP & Energy Infrastructure",
+    "bank": "za",
+    "isin": "IE00B87K9S77",
+    "ticker": "0P0000Z12E.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "BGF World Technology",
+    "bank": "za",
+    "isin": "LU0171310443",
+    "ticker": "0P00000V0H.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Schroder Strategic Credit",
+    "bank": "za",
+    "isin": "LU1046235906",
+    "ticker": "0P00012W6B.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Candriam Bonds Global High Yield",
+    "bank": "za",
+    "isin": "LU0170291933",
+    "ticker": "0P00009U5R.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "Pictet EUR Short Term High Yield",
+    "bank": "za",
+    "isin": "LU0725974702",
+    "ticker": "0P0000SXV6.F",
+    "currency": "EUR"
+  },
+  {
+    "name": "DNCA Invest Alpha Bonds",
+    "bank": "za",
+    "isin": "LU1694789451",
+    "ticker": "0P0001C6O0.F",
+    "currency": "EUR"
+  }
+]
