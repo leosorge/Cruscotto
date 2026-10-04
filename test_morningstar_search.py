@@ -1,8 +1,14 @@
 import unittest
-from morningstar_search import exact_results
+from morningstar_search import exact_results, verified_result
 
 
 class SearchTests(unittest.TestCase):
+    def test_verified_identity_is_exact_and_unknown_is_not_guessed(self):
+        result = verified_result("LU1046235906")
+        self.assertEqual(result[0]["value"]["securityID"], "F00000T8RJ")
+        self.assertEqual(exact_results({"results": result}, "LU1046235906"), result)
+        self.assertIsNone(verified_result("LU0503631557"))
+
     def test_rejects_different_share_class(self):
         with self.assertRaises(ValueError):
             exact_results({"results": [{"value": {"isin": "OTHER", "investmentType": "FO", "securityID": "F1"}}]}, "LU0503631557")
