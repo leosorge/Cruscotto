@@ -1,6 +1,7 @@
 """Quotazioni per la lista di osservazione, senza quantità patrimoniali."""
 from datetime import date, timedelta
 import pandas as pd
+from morningstar_process import fetch_nav
 
 def normalize_history(raw):
     if isinstance(raw, pd.Series):
@@ -36,8 +37,7 @@ def fetch_asset(asset, baseline, end):
     isin = asset.get('deltahedge_isin') or asset.get('isin', '')
     if len(isin) == 12 and isin[:2].isalpha():
         try:
-            import mstarpy
-            raw = mstarpy.Funds(term=isin).nav(start_date=start, end_date=end, frequency='daily')
+            raw = fetch_nav(isin, start, end)
             history = normalize_history(raw)
             source = 'Morningstar'
         except Exception as exc:
