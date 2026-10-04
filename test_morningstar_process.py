@@ -11,7 +11,15 @@ from morningstar_process import fetch_nav
 class ProcessTests(unittest.TestCase):
     def run_fake(self, source, timeout=10):
         with tempfile.TemporaryDirectory() as directory:
-            Path(directory, "mstarpy.py").write_text(source)
+            session_stub = """import sys, types
+search = types.ModuleType('mstarpy.search')
+class Session:
+    def __enter__(self): return self
+    def __exit__(self, *args): pass
+search.MorningstarSession = Session
+sys.modules['mstarpy.search'] = search
+"""
+            Path(directory, "mstarpy.py").write_text(session_stub + source)
             with patch.dict(os.environ, {"PYTHONPATH": directory}):
                 return fetch_nav("LU0503631557", date(2025,12,31), date(2026,10,4), timeout)
 
@@ -23,7 +31,7 @@ class ProcessTests(unittest.TestCase):
 assert threading.current_thread() is threading.main_thread()
 signal.signal(signal.SIGTERM, signal.SIG_DFL)
 class Funds:
-    def __init__(self, term): pass
+    def __init__(self, term, session=None): pass
     def nav(self, **kwargs):
         print('library diagnostic')
         return [{'date':'2025-12-31','nav':100}]

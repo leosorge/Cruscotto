@@ -18,9 +18,11 @@ def main():
     try:
         with redirect_stdout(sys.stderr):
             import mstarpy
-            raw = mstarpy.Funds(term=isin).nav(
-                start_date=date.fromisoformat(start),
-                end_date=date.fromisoformat(end), frequency="daily")
+            from morningstar_search import make_session
+            with make_session() as session:
+                raw = mstarpy.Funds(term=isin, session=session).nav(
+                    start_date=date.fromisoformat(start),
+                    end_date=date.fromisoformat(end), frequency="daily")
             # Use pandas' JSON serializer for timestamps and numpy values.
             import pandas as pd
             data = json.loads(pd.DataFrame(raw).to_json(orient="records", date_format="iso"))
