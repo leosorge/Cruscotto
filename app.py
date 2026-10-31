@@ -8,6 +8,7 @@ from quotes import fetch_asset
 
 st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
+st.caption('Recupero za: Yahoo per ISIN → FT · metodo Untitled64')
 assets = json.loads(Path(__file__).with_name('titoli.json').read_text())
 st.caption(f'Lista di osservazione · IG / mm / za · {len(assets)} titoli')
 st.info('Quantità convenzionale: 1 per titolo. Il cruscotto confronta prezzi e variazioni; non calcola il valore del patrimonio. Le variazioni dei prezzi non includono cedole o distribuzioni.')
@@ -63,3 +64,4 @@ else:
         st.caption('Media aritmetica delle variazioni disponibili, senza ponderazione patrimoniale.')
         st.dataframe(frame.groupby('Banca')['Variazione %'].agg(['count', 'mean', 'min', 'max']))
     st.caption('I titoli senza storico restano N/D. I link Borsa presenti nei notebook sono conservati per controllo manuale; nessun prezzo viene dedotto da testo generico della pagina.')
+

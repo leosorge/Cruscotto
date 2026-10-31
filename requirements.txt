@@ -3,3 +3,6 @@ pandas==2.2.3
 plotly==7.1.0
 yfinance==1.7.0
 mstarpy==11.1.0
+
+requests>=2.31,<3
+lxml>=5,<7

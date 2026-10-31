@@ -2,6 +2,7 @@
 from datetime import date, timedelta
 import pandas as pd
 from morningstar_process import fetch_nav
+from fund_sources import yahoo_serie, ft_serie
 
 def normalize_history(raw):
     if isinstance(raw, pd.Series):
@@ -35,7 +36,16 @@ def fetch_asset(asset, baseline, end):
     start = baseline - timedelta(days=20)
     # Ricerca per ISIN: identifica la classe del fondo prima del fallback Yahoo.
     isin = asset.get('deltahedge_isin') or asset.get('isin', '')
-    if len(isin) == 12 and isin[:2].isalpha():
+    if asset.get('bank') == 'za':
+        raw, source = yahoo_serie(isin, start, end)
+        if raw is None:
+            raw, source = ft_serie(isin, start, end, asset.get('currency', 'EUR'))
+        if raw is not None:
+            history = normalize_history(raw)
+        else:
+            source = 'N/D'
+            errors.append('Yahoo/FT: nessuno storico disponibile per ISIN')
+    if asset.get('bank') != 'za' and len(isin) == 12 and isin[:2].isalpha():
         try:
             raw = fetch_nav(isin, start, end)
             history = normalize_history(raw)
@@ -64,3 +74,4 @@ def fetch_asset(asset, baseline, end):
                     'Data prezzo': d1, 'Variazione %': pct,
                     'Stato': 'Disponibile' if pct is not None else 'Storico iniziale mancante'})
     return row
+
