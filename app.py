@@ -8,8 +8,8 @@ from quotes import fetch_asset
 
 st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
-st.caption('Lista di osservazione · IG / mm / za · 25 titoli')
 assets = json.loads(Path(__file__).with_name('titoli.json').read_text())
+st.caption(f'Lista di osservazione · IG / mm / za · {len(assets)} titoli')
 st.info('Quantità convenzionale: 1 per titolo. Il cruscotto confronta prezzi e variazioni; non calcola il valore del patrimonio. Le variazioni dei prezzi non includono cedole o distribuzioni.')
 with st.sidebar:
     st.header('Periodo e filtri')
@@ -26,14 +26,14 @@ if update:
         try:
             rows.append(fetch_asset(asset, start, end))
         except Exception as exc:
-            rows.append({'Titolo': asset['name'], 'Banca': asset['bank'], 'Stato': 'Errore', 'Dettaglio': str(exc)[:200]})
+            rows.append({'Titolo': asset['name'], 'Banca': asset['bank'], 'ISIN': asset.get('deltahedge_isin') or asset.get('isin', ''), 'Stato': 'Errore', 'Dettaglio': str(exc)[:200]})
     progress.empty()
     st.session_state['report'] = pd.DataFrame(rows)
     st.session_state['period'] = (start, end)
     st.session_state['updated'] = datetime.now().isoformat(timespec='seconds')
 if 'report' not in st.session_state:
     st.write('Premi Aggiorna quotazioni per recuperare i dati.')
-    st.dataframe(pd.DataFrame([{'Banca': a['bank'], 'Titolo': a['name'], 'Valuta': a.get('currency', 'EUR')} for a in assets if a['bank'] in banks]), hide_index=True, width='stretch')
+    st.dataframe(pd.DataFrame([{'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for a in assets if a['bank'] in banks]), hide_index=True, width='stretch')
 else:
     frame = st.session_state['report'].copy()
     for col in ['Variazione %', 'Ultimo prezzo', 'Prezzo iniziale']:

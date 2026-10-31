@@ -1,6 +1,6 @@
 # Finance Cruscotto
 
-App Streamlit ricavata dai sette notebook dell'autore. Integra 25 titoli e le sezioni IG, mm e za. Non richiede Colab, montaggio Drive o esecuzione di notebook.
+App Streamlit ricavata dai sette notebook dell'autore. Integra 30 titoli e le sezioni IG, mm e za. Non richiede Colab, montaggio Drive o esecuzione di notebook.
 
 ## Avvio
 
@@ -26,3 +26,7 @@ Verifica effettuata: avvio con Streamlit AppTest, 25 titoli presenti e nessuna e
 
 ## Verifica del 3 ottobre 2026
 Corretto il parametro session di mstarpy: richiede una MorningstarSession, non una requests.Session generica. La prova reale su Pictet Security fallisce ora all’avvio di Chrome richiesto da mstarpy. Yahoo restituisce HTTP 429. Nessuna quotazione è stata recuperata; il deploy Streamlit non è verificato.
+
+## Aggiornamento za del 31 ottobre 2026
+
+La sezione za contiene i 12 fondi con nomi e ISIN forniti dall'autore. Le sezioni IG e mm restano invariate. Tutte le viste, i grafici e il CSV usano la stessa anagrafica `titoli.json`. Gli ISIN sono visibili anche prima del recupero delle quotazioni. I ticker Yahoo precedenti di za sono rimossi: non sono stati verificati per le classi indicate. Il recupero di za avviene per ISIN tramite Morningstar; in caso di indisponibilità i valori restano N/D.

@@ -120,52 +120,75 @@
     "currency": "EUR"
   },
   {
-    "name": "Pictet Global Environmental Opp. (Geo)",
-    "bank": "za",
-    "isin": "LU0503631557",
-    "ticker": "0P0000NV7K.F",
-    "currency": "EUR"
-  },
-  {
-    "name": "Pimco MLP & Energy Infrastructure",
-    "bank": "za",
-    "isin": "IE00B87K9S77",
-    "ticker": "0P0000Z12E.F",
-    "currency": "EUR"
-  },
-  {
-    "name": "BGF World Technology",
-    "bank": "za",
-    "isin": "LU0171310443",
-    "ticker": "0P00000V0H.F",
-    "currency": "EUR"
-  },
-  {
-    "name": "Schroder Strategic Credit",
+    "name": "SCHRODERS STRAT CREDIT",
     "bank": "za",
     "isin": "LU1046235906",
-    "ticker": "0P00012W6B.F",
     "currency": "EUR"
   },
   {
-    "name": "Candriam Bonds Global High Yield",
+    "name": "CANDRIAM BONDS GLB HY",
     "bank": "za",
-    "isin": "LU0170291933",
-    "ticker": "0P00009U5R.F",
+    "isin": "LU2098774149",
     "currency": "EUR"
   },
   {
-    "name": "Pictet EUR Short Term High Yield",
+    "name": "CARMIGNAC FLEX CREDIT",
     "bank": "za",
-    "isin": "LU0725974702",
-    "ticker": "0P0000SXV6.F",
+    "isin": "LU1623762843",
     "currency": "EUR"
   },
   {
-    "name": "DNCA Invest Alpha Bonds",
+    "name": "DNCA ALPHA BONDS",
     "bank": "za",
-    "isin": "LU1694789451",
-    "ticker": "0P0001C6O0.F",
+    "isin": "LU1694789378",
+    "currency": "EUR"
+  },
+  {
+    "name": "GS EUROCREDIT",
+    "bank": "za",
+    "isin": "LU0555026250",
+    "currency": "EUR"
+  },
+  {
+    "name": "KAIROS BOND PLUS",
+    "bank": "za",
+    "isin": "LU0680824983",
+    "currency": "EUR"
+  },
+  {
+    "name": "PICTET EUR ST HY",
+    "bank": "za",
+    "isin": "LU0733672124",
+    "currency": "EUR"
+  },
+  {
+    "name": "BGF WORLD TECH",
+    "bank": "za",
+    "isin": "LU0376438312",
+    "currency": "EUR"
+  },
+  {
+    "name": "PICTET GEO",
+    "bank": "za",
+    "isin": "LU0503631631",
+    "currency": "EUR"
+  },
+  {
+    "name": "PIMCO MLP ENERGY INFR",
+    "bank": "za",
+    "isin": "IE00BRS5SW33",
+    "currency": "EUR"
+  },
+  {
+    "name": "ALGEBRIS FIN CREDIT",
+    "bank": "za",
+    "isin": "IE00B81TMV64",
+    "currency": "EUR"
+  },
+  {
+    "name": "AGI CREDIT OPP PLUS",
+    "bank": "za",
+    "isin": "LU2002383896",
     "currency": "EUR"
   }
 ]
