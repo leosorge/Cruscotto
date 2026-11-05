@@ -140,7 +140,7 @@ else:
             if not valid.empty:
                 fig = px.bar(valid, x='Variazione %', y='Titolo', color='Banca', orientation='h', hover_data=['Fonte', 'Data prezzo'], height=max(400, len(valid)*32))
                 fig.add_vline(x=0)
-                st.plotly_chart(fig, width='stretch')
+                st.plotly_chart(fig, width='stretch', key=f'chart_{label}')
             else:
                 st.warning('Nessuna variazione disponibile per questa selezione.')
             st.dataframe(shown, hide_index=True, width='stretch')

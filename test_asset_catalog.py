@@ -13,6 +13,23 @@ def sample_catalog():
                  ticker='TEST.F', currency='EUR') for i in range(30)]
 
 
+def test_report_with_only_one_bank_has_distinct_charts():
+    from datetime import date
+    from pathlib import Path
+    import pandas as pd
+    at = AppTest.from_file(str(Path(__file__).with_name('app.py'))).run(timeout=30)
+    at.session_state['report'] = pd.DataFrame([{
+        'N.': 1, 'Banca': 'mm', 'Titolo': 'Prova', 'Variazione %': 2.,
+        'Ultimo prezzo': 102., 'Prezzo iniziale': 100.,
+        'Fonte': 'Test', 'Data prezzo': '2026-11-05',
+    }])
+    at.session_state['period'] = (date(date.today().year, 1, 1), date.today())
+    at.session_state['updated'] = 'test'
+    at.multiselect[0].set_value(['mm']).run()
+    assert not at.exception
+    assert len(at.get('plotly_chart')) == 2
+
+
 def test_edit_add_delete_and_atomic_save(tmp_path):
     originals = [dict(bank='mm', name='Primo', isin='LU1046235906', ticker='OLD.F', url='old'),
                  dict(bank='za', name='Secondo', isin='LU0171310443')]
