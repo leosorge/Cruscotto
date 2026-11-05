@@ -5,11 +5,13 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from quotes import fetch_asset
+from asset_catalog import editor_rows, assets_from_rows, save_assets
 
 st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
 st.caption('Recupero za: Yahoo per ISIN → FT · metodo Untitled64')
-assets = json.loads(Path(__file__).with_name('titoli.json').read_text())
+catalog_path = Path(__file__).with_name('titoli.json')
+assets = json.loads(catalog_path.read_text(encoding='utf-8'))
 st.caption(f'Lista di osservazione · IG / mm / za · {len(assets)} titoli')
 st.info('Quantità convenzionale: 1 per titolo. Il cruscotto confronta prezzi e variazioni; non calcola il valore del patrimonio. Le variazioni dei prezzi non includono cedole o distribuzioni.')
 with st.sidebar:
@@ -19,6 +21,44 @@ with st.sidebar:
     banks = st.multiselect('Banche', ['IG', 'mm', 'za'], default=['IG', 'mm', 'za'])
     update = st.button('Aggiorna quotazioni', type='primary', width='stretch')
     st.caption('Il prezzo iniziale è l’ultima quotazione disponibile entro la data di confronto. Ogni prezzo riporta la propria data.')
+    editing = st.toggle('Modifica anagrafica')
+if st.session_state.pop('catalog_saved', False):
+    st.success('Anagrafica salvata. Aggiorna le quotazioni per i nuovi dati.')
+if editing:
+    if 'catalog_baseline' not in st.session_state:
+        st.session_state['catalog_baseline'] = assets
+    baseline = st.session_state['catalog_baseline']
+    st.subheader('Modifica titoli')
+    st.caption('Modifica le celle; usa la riga vuota in fondo per aggiungere un titolo e seleziona le righe da eliminare. I numeri seguono l’ordine dell’anagrafica e restano uguali nei filtri. Dopo il salvataggio vengono ricalcolati.')
+    st.info('Se cambi ISIN, il ticker e il link della vecchia classe vengono rimossi. Puoi indicare un nuovo ticker nella stessa modifica. Il salvataggio aggiorna titoli.json sul server; su hosting con disco temporaneo, scarica anche una copia JSON.')
+    with st.form('catalog_form'):
+        edited = st.data_editor(
+            pd.DataFrame(editor_rows(baseline), columns=['N', 'Banca', 'Titolo', 'ISIN', 'Valuta', 'Ticker']),
+            num_rows='dynamic', hide_index=True, width='stretch', disabled=['N'],
+            column_config={
+                'N': st.column_config.NumberColumn('N.', format='%d'),
+                'Banca': st.column_config.SelectboxColumn(options=['IG', 'mm', 'za'], required=True),
+                'Titolo': st.column_config.TextColumn(required=True),
+                'Valuta': st.column_config.TextColumn(default='EUR', required=True),
+                'Ticker': st.column_config.TextColumn('Ticker Yahoo'),
+            }, key='catalog_editor_' + str(st.session_state.get('catalog_revision', 0)))
+        submitted = st.form_submit_button('Salva anagrafica')
+    if submitted:
+        try:
+            updated_assets = assets_from_rows(edited.to_dict('records'), baseline)
+            save_assets(catalog_path, updated_assets, baseline)
+        except (ValueError, OSError) as exc:
+            st.error(str(exc))
+        else:
+            for key in ('report', 'period', 'updated', 'catalog_baseline'):
+                st.session_state.pop(key, None)
+            st.session_state['catalog_revision'] = st.session_state.get('catalog_revision', 0) + 1
+            st.session_state['catalog_saved'] = True
+            st.rerun()
+    st.download_button('Scarica anagrafica JSON', json.dumps(assets, ensure_ascii=False, indent=2),
+                       'titoli.json', 'application/json')
+    st.stop()
+st.session_state.pop('catalog_baseline', None)
 if update:
     rows = []
     progress = st.progress(0, text='Recupero quotazioni')
@@ -28,13 +68,14 @@ if update:
             rows.append(fetch_asset(asset, start, end))
         except Exception as exc:
             rows.append({'Titolo': asset['name'], 'Banca': asset['bank'], 'ISIN': asset.get('deltahedge_isin') or asset.get('isin', ''), 'Stato': 'Errore', 'Dettaglio': str(exc)[:200]})
+        rows[-1] = {'N.': i + 1, **rows[-1]}
     progress.empty()
-    st.session_state['report'] = pd.DataFrame(rows)
+    st.session_state['report'] = pd.DataFrame(rows) if rows else pd.DataFrame(columns=['N.', 'Titolo', 'Banca', 'ISIN'])
     st.session_state['period'] = (start, end)
     st.session_state['updated'] = datetime.now().isoformat(timespec='seconds')
 if 'report' not in st.session_state:
     st.write('Premi Aggiorna quotazioni per recuperare i dati.')
-    st.dataframe(pd.DataFrame([{'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for a in assets if a['bank'] in banks]), hide_index=True, width='stretch')
+    st.dataframe(pd.DataFrame([{'N.': i, 'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for i, a in enumerate(assets, 1) if a['bank'] in banks]), hide_index=True, width='stretch')
 else:
     frame = st.session_state['report'].copy()
     for col in ['Variazione %', 'Ultimo prezzo', 'Prezzo iniziale']:

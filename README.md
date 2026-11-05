@@ -10,6 +10,16 @@ Usare Python 3.12. Installare `pip install -r requirements.txt`, poi avviare `st
 
 Caricare i file della cartella in un repository GitHub e selezionare `app.py` come file principale su Streamlit Community Cloud. Non includere dati personali o credenziali. Nessuna pubblicazione è stata effettuata durante la creazione del progetto.
 
+## Numerazione e modifica dei titoli
+
+La colonna `N.` identifica la posizione del titolo nell’anagrafica, anche nelle viste filtrate e nel CSV. I numeri vengono ricalcolati dopo aggiunte e cancellazioni.
+
+Attivare **Modifica anagrafica** nella barra laterale: la tabella consente di cambiare ISIN, nome, banca, valuta e ticker Yahoo. Per aggiungere una voce usare la riga vuota in fondo; per cancellarla selezionare la riga e usare il comando di eliminazione della tabella. Premere **Salva anagrafica** per applicare le modifiche. Occorrono banca, nome, valuta e almeno un ISIN o un ticker. Gli ISIN vengono normalizzati in maiuscolo e controllati nel formato; il controllo non certifica l’identità o la disponibilità dello strumento.
+
+Il salvataggio sostituisce atomicamente `titoli.json` sul server e azzera il report precedente. Quando cambia un ISIN, il vecchio link viene rimosso e il ticker precedente viene cancellato, salvo che sia stato sostituito nello stesso intervento. Questo evita il recupero dei prezzi della vecchia classe. Dopo il salvataggio tornare alla vista principale e aggiornare le quotazioni.
+
+**Scarica anagrafica JSON** esporta l’ultima versione salvata. Su Streamlit Community Cloud o altri hosting con disco temporaneo, le modifiche locali possono andare perse al riavvio o al deploy: conservare il JSON e aggiornare il file nel repository per renderle permanenti tra i deploy. L’editor non pubblica modifiche su GitHub.
+
 ## Comportamento
 
 Per za, il pulsante Aggiorna usa la ricerca Yahoo per ISIN e FT Markets come fallback, adattati da Untitled64. IG e mm mantengono Morningstar e i ticker Yahoo originali. La disponibilità dei fornitori e la correttezza dei ticker/classi devono essere verificate dal server di destinazione. Le date delle quotazioni sono visibili. Il riferimento di inizio anno è l'ultimo prezzo disponibile entro il 1 gennaio, senza utilizzare prezzi successivi alla data richiesta. Non vengono applicate le modifiche manuali dimostrative del notebook originario.
