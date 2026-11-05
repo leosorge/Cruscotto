@@ -65,11 +65,12 @@ if editing:
             pd.DataFrame(editor_rows(baseline), columns=['N', 'Banca', 'Titolo', 'ISIN', 'Valuta', 'Ticker']),
             num_rows='dynamic', hide_index=True, width='stretch', disabled=['N'],
             column_config={
-                'N': st.column_config.NumberColumn('N.', format='%d'),
-                'Banca': st.column_config.SelectboxColumn(options=['IG', 'mm', 'za'], required=True),
-                'Titolo': st.column_config.TextColumn(required=True),
-                'Valuta': st.column_config.TextColumn(default='EUR', required=True),
-                'Ticker': st.column_config.TextColumn('Ticker Yahoo'),
+                'N': st.column_config.NumberColumn('N.', format='%d', width=62),
+                'Banca': st.column_config.SelectboxColumn(options=['IG', 'mm', 'za'], required=True, width=74),
+                'Titolo': st.column_config.TextColumn(required=True, width=324),
+                'ISIN': st.column_config.TextColumn(width=190),
+                'Valuta': st.column_config.TextColumn(default='EUR', required=True, width=74),
+                'Ticker': st.column_config.TextColumn('Ticker Yahoo', width=270),
             }, key='catalog_editor_' + str(st.session_state.get('catalog_revision', 0)))
         submitted = st.form_submit_button('Salva anagrafica')
         st.markdown('**Elimina titoli**')
@@ -111,7 +112,14 @@ if update:
     st.session_state['updated'] = datetime.now().isoformat(timespec='seconds')
 if 'report' not in st.session_state:
     st.write('Premi Aggiorna quotazioni per recuperare i dati.')
-    st.dataframe(pd.DataFrame([{'N.': i, 'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for i, a in enumerate(assets, 1) if a['bank'] in banks]), hide_index=True, width='stretch')
+    st.dataframe(pd.DataFrame([{'N.': i, 'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for i, a in enumerate(assets, 1) if a['bank'] in banks]), hide_index=True, width='stretch',
+                 column_config={
+                     'N.': st.column_config.NumberColumn(format='%d', width=62),
+                     'Banca': st.column_config.TextColumn(width=74),
+                     'Titolo': st.column_config.TextColumn(width=324),
+                     'ISIN': st.column_config.TextColumn(width=190),
+                     'Valuta': st.column_config.TextColumn(width=74),
+                 })
 else:
     frame = st.session_state['report'].copy()
     for col in ['Variazione %', 'Ultimo prezzo', 'Prezzo iniziale']:
