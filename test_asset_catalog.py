@@ -6,6 +6,13 @@ from streamlit.testing.v1 import AppTest
 from asset_catalog import assets_from_rows, editor_rows, save_assets, load_assets_json
 
 
+def sample_catalog():
+    # L'anagrafica dell'utente è modificabile: i test usano dati indipendenti.
+    return [dict(bank='mm' if i < 12 else 'IG' if i < 18 else 'za',
+                 name=f'Titolo {i + 1}', isin='LU1046235906',
+                 ticker='TEST.F', currency='EUR') for i in range(30)]
+
+
 def test_edit_add_delete_and_atomic_save(tmp_path):
     originals = [dict(bank='mm', name='Primo', isin='LU1046235906', ticker='OLD.F', url='old'),
                  dict(bank='za', name='Secondo', isin='LU0171310443')]
@@ -33,7 +40,7 @@ def test_validation_and_empty_catalog():
 
 def test_json_roundtrip_and_validation():
     from pathlib import Path
-    assets = json.loads(Path(__file__).with_name('titoli.json').read_text())
+    assets = sample_catalog()
     assert load_assets_json(json.dumps(assets).encode('utf-8-sig')) == assets
     assert load_assets_json('[]') == []
     for invalid in ('{', '{}', '[1]', '[{"bank":"za"}]',
@@ -46,7 +53,7 @@ def test_explicit_delete_control(tmp_path):
     from pathlib import Path
     source = Path(__file__).parent
     (tmp_path / 'app.py').write_text((source / 'app.py').read_text())
-    assets = json.loads((source / 'titoli.json').read_text())
+    assets = sample_catalog()
     path = tmp_path / 'titoli.json'
     path.write_text(json.dumps(assets))
     at = AppTest.from_file(str(tmp_path / 'app.py')).run(timeout=30)
@@ -75,7 +82,7 @@ def test_app_import_and_reject_invalid_file(tmp_path):
     from unittest.mock import patch
     source = Path(__file__).parent
     (tmp_path / 'app.py').write_text((source / 'app.py').read_text())
-    assets = json.loads((source / 'titoli.json').read_text())
+    assets = sample_catalog()
     path = tmp_path / 'titoli.json'
     path.write_text(json.dumps(assets))
     at = AppTest.from_file(str(tmp_path / 'app.py')).run(timeout=30)
@@ -98,7 +105,7 @@ def test_app_editor_save_and_numbering(tmp_path):
     from pathlib import Path
     source = Path(__file__).parent
     (tmp_path / 'app.py').write_text((source / 'app.py').read_text())
-    assets = json.loads((source / 'titoli.json').read_text())
+    assets = sample_catalog()
     path = tmp_path / 'titoli.json'
     path.write_text(json.dumps(assets))
     at = AppTest.from_file(str(tmp_path / 'app.py')).run(timeout=30)
