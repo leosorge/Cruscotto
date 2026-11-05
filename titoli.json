@@ -1,40 +1,10 @@
 [
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "SMFI M'lanum Flessibile Svil. Italia",
-    "ticker": "0P0001563A.F"
-  },
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "MBB Carmignac Strategic Sel SA",
-    "ticker": "0P0000ZJKG.F"
-  },
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "MBB MS Global Selection SHA",
-    "ticker": "0P0000CN9W.F"
-  },
-  {
+ {
     "bank": "mm",
     "currency": "EUR",
     "name": "MBB Global High Yield SA",
     "ticker": "0P00000S5S.F"
-  },
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "MBB Global Leaders LA",
-    "ticker": "0P0001HH0V.F"
-  },
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "MBB Innovative Thematic Opp. LA",
-    "ticker": "0P0001EU36.F"
-  },
+  },  
   {
     "bank": "mm",
     "currency": "EUR",
@@ -44,38 +14,42 @@
   {
     "bank": "mm",
     "currency": "EUR",
-    "name": "MBB Emerging Markets Coll. LA",
-    "isin": "IE0005380518",
-    "url": "https://www.borsaitaliana.it/borsa/fondi/dettaglio/2TOPEMA.html"
+    "name": "MBB Global Leaders LA",
+    "ticker": "0P0001HH0V.F"
   },
+  {
+  "bank": "mm",
+  "currency": "EUR",
+  "name": "MBB Mediolanum Global Selection LHA EUR PIC",
+  "isin": "IE000KGC4J99",
+  "ticker": ""
+},
+{
+  "bank": "mm",
+  "currency": "EUR",
+  "name": "MBB MS Global Selection SA EUR PIC",
+  "isin": "IE00B2NLMT64",
+  "ticker": ""
+},
   {
     "bank": "mm",
     "currency": "EUR",
-    "name": "BTP VAL10/28 S-U CUM",
-    "isin": "IT0005565392",
-    "url": "https://www.borsaitaliana.it/borsa/obbligazioni/mot/btp/scheda/IT0005565400-MOTX.html?lang=it"
+    "name": "MBB Innovative Thematic Opp. LA",
+    "ticker": "0P0001EU36.F"
   },
-  {
+ {
     "bank": "mm",
     "currency": "EUR",
-    "name": "C EXOP 25/12SA10/31",
-    "isin": "IT0006770652",
-    "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/IT0006770652-ETLX.html?lang=it"
-  },
-  {
-    "bank": "mm",
-    "currency": "EUR",
-    "name": "XS2911464654 Certificate",
+    "name": "Certificate CPI/cpo 25 BNP 5 ",
     "isin": "XS2911464654",
     "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/XS2911464654-ETLX.html?lang=it"
   },
   {
     "bank": "mm",
     "currency": "EUR",
-    "name": "MBB MS Global Selection LA",
-    "isin": "0P0000CN9X.F",
-    "url": "",
-    "deltahedge_isin": "IE00B2NLMT64"
+    "name": "BTP VAL10/28 S-U CUM",
+    "isin": "IT0005565392",
+    "url": "https://www.borsaitaliana.it/obbligazioni/btp-valore/avvisodiiniziodistribuzionebtpvaloreiiemissione_pdf.htm"
   },
   {
     "name": "Lux Pictet Future Trends",
