@@ -6,6 +6,24 @@ import re
 import tempfile
 
 
+def load_assets_json(data):
+    """Legge un backup senza perdere ticker, link o identificativi alternativi."""
+    try:
+        payload = json.loads(data.decode('utf-8-sig') if isinstance(data, bytes) else data)
+    except (ValueError, UnicodeError) as exc:
+        raise ValueError('Il file non contiene un JSON valido in formato UTF-8.') from exc
+    if not isinstance(payload, list):
+        raise ValueError('Il JSON deve contenere un elenco di titoli, come il file esportato dall’app.')
+    for position, asset in enumerate(payload, 1):
+        if not isinstance(asset, dict) or any(not isinstance(v, str) for v in asset.values()):
+            raise ValueError(f'Riga {position}: ogni titolo deve contenere campi testuali.')
+        if not asset.get('name', '').strip() or asset.get('bank') not in ('IG', 'mm', 'za'):
+            raise ValueError(f'Riga {position}: indicare titolo e banca (IG, mm o za).')
+    # Usa gli stessi controlli dell’editor; conserva il formato originale dei backup.
+    assets_from_rows(editor_rows(payload), payload)
+    return payload
+
+
 def editor_rows(assets):
     return [dict(N=i, Banca=a['bank'], Titolo=a['name'],
                  ISIN=a.get('deltahedge_isin') or a.get('isin', ''),

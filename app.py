@@ -5,13 +5,22 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from quotes import fetch_asset
-from asset_catalog import editor_rows, assets_from_rows, save_assets
+from asset_catalog import editor_rows, assets_from_rows, save_assets, load_assets_json
 
 st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
 st.caption('Recupero za: Yahoo per ISIN → FT · metodo Untitled64')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
+
+
+def catalog_updated():
+    for key in ('report', 'period', 'updated', 'catalog_baseline'):
+        st.session_state.pop(key, None)
+    st.session_state['catalog_revision'] = st.session_state.get('catalog_revision', 0) + 1
+    st.session_state['catalog_saved'] = True
+
+
 st.caption(f'Lista di osservazione · IG / mm / za · {len(assets)} titoli')
 st.info('Quantità convenzionale: 1 per titolo. Il cruscotto confronta prezzi e variazioni; non calcola il valore del patrimonio. Le variazioni dei prezzi non includono cedole o distribuzioni.')
 with st.sidebar:
@@ -22,6 +31,26 @@ with st.sidebar:
     update = st.button('Aggiorna quotazioni', type='primary', width='stretch')
     st.caption('Il prezzo iniziale è l’ultima quotazione disponibile entro la data di confronto. Ogni prezzo riporta la propria data.')
     editing = st.toggle('Modifica anagrafica')
+    st.subheader('Anagrafica sul PC')
+    st.download_button('Salva JSON sul PC', json.dumps(assets, ensure_ascii=False, indent=2),
+                       'titoli.json', 'application/json')
+    st.caption('Scarica l’ultima anagrafica salvata. Se stai modificando la tabella, premi prima Salva anagrafica.')
+    with st.form('import_catalog'):
+        upload = st.file_uploader('Carica JSON dal PC', type=['json'])
+        st.caption('Il caricamento sostituisce tutta l’anagrafica del server, condivisa con gli altri utenti, e scarta le modifiche non salvate nell’editor. Non importa quotazioni.')
+        import_submitted = st.form_submit_button('Applica JSON caricato')
+    if import_submitted:
+        if upload is None:
+            st.error('Seleziona un file JSON dal tuo PC.')
+        else:
+            try:
+                imported_assets = load_assets_json(upload.getvalue())
+                save_assets(catalog_path, imported_assets, assets)
+            except (ValueError, OSError) as exc:
+                st.error(str(exc))
+            else:
+                catalog_updated()
+                st.rerun()
 if st.session_state.pop('catalog_saved', False):
     st.success('Anagrafica salvata. Aggiorna le quotazioni per i nuovi dati.')
 if editing:
@@ -50,13 +79,8 @@ if editing:
         except (ValueError, OSError) as exc:
             st.error(str(exc))
         else:
-            for key in ('report', 'period', 'updated', 'catalog_baseline'):
-                st.session_state.pop(key, None)
-            st.session_state['catalog_revision'] = st.session_state.get('catalog_revision', 0) + 1
-            st.session_state['catalog_saved'] = True
+            catalog_updated()
             st.rerun()
-    st.download_button('Scarica anagrafica JSON', json.dumps(assets, ensure_ascii=False, indent=2),
-                       'titoli.json', 'application/json')
     st.stop()
 st.session_state.pop('catalog_baseline', None)
 if update:

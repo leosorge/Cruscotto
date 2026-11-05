@@ -3,7 +3,7 @@ import json
 import pytest
 from streamlit.testing.v1 import AppTest
 
-from asset_catalog import assets_from_rows, editor_rows, save_assets
+from asset_catalog import assets_from_rows, editor_rows, save_assets, load_assets_json
 
 
 def test_edit_add_delete_and_atomic_save(tmp_path):
@@ -29,6 +29,41 @@ def test_validation_and_empty_catalog():
     with pytest.raises(ValueError, match='ISIN non valido'):
         assets_from_rows([dict(Banca='za', Titolo='Errore', ISIN='errato', Valuta='EUR')], [])
     assert assets_from_rows([], []) == []
+
+
+def test_json_roundtrip_and_validation():
+    from pathlib import Path
+    assets = json.loads(Path(__file__).with_name('titoli.json').read_text())
+    assert load_assets_json(json.dumps(assets).encode('utf-8-sig')) == assets
+    assert load_assets_json('[]') == []
+    for invalid in ('{', '{}', '[1]', '[{"bank":"za"}]',
+                    '[{"bank":"za","name":"Test","isin":"errato"}]'):
+        with pytest.raises(ValueError):
+            load_assets_json(invalid)
+
+
+def test_app_import_and_reject_invalid_file(tmp_path):
+    from io import BytesIO
+    from pathlib import Path
+    from unittest.mock import patch
+    source = Path(__file__).parent
+    (tmp_path / 'app.py').write_text((source / 'app.py').read_text())
+    assets = json.loads((source / 'titoli.json').read_text())
+    path = tmp_path / 'titoli.json'
+    path.write_text(json.dumps(assets))
+    at = AppTest.from_file(str(tmp_path / 'app.py')).run(timeout=30)
+    imported = [dict(bank='za', name='Dal PC', isin='LU0171310443', currency='EUR')]
+    with patch('streamlit.file_uploader', return_value=BytesIO(json.dumps(imported).encode())):
+        next(b for b in at.button if b.label == 'Applica JSON caricato').click().run()
+    assert not at.exception
+    assert json.loads(path.read_text()) == imported
+    assert len(at.dataframe[0].value) == 1
+    assert at.dataframe[0].value['Titolo'].tolist() == ['Dal PC']
+    with patch('streamlit.file_uploader', return_value=BytesIO(b'not json')):
+        next(b for b in at.button if b.label == 'Applica JSON caricato').click().run()
+    assert not at.exception
+    assert at.error
+    assert json.loads(path.read_text()) == imported
 
 
 def test_app_editor_save_and_numbering(tmp_path):

@@ -18,7 +18,9 @@ Attivare **Modifica anagrafica** nella barra laterale: la tabella consente di ca
 
 Il salvataggio sostituisce atomicamente `titoli.json` sul server e azzera il report precedente. Quando cambia un ISIN, il vecchio link viene rimosso e il ticker precedente viene cancellato, salvo che sia stato sostituito nello stesso intervento. Questo evita il recupero dei prezzi della vecchia classe. Dopo il salvataggio tornare alla vista principale e aggiornare le quotazioni.
 
-**Scarica anagrafica JSON** esporta l’ultima versione salvata. Su Streamlit Community Cloud o altri hosting con disco temporaneo, le modifiche locali possono andare perse al riavvio o al deploy: conservare il JSON e aggiornare il file nel repository per renderle permanenti tra i deploy. L’editor non pubblica modifiche su GitHub.
+Nella barra laterale, **Salva JSON sul PC** esporta l’ultima versione salvata: se la tabella contiene modifiche, premere prima **Salva anagrafica**. Per ripristinare un backup, scegliere **Carica JSON dal PC** e premere **Applica JSON caricato**. Il file viene validato prima di sostituire tutta l’anagrafica sul server; un file non valido lascia intatti i dati esistenti. Il caricamento elimina il report precedente e le modifiche non salvate nell’editor. Il JSON contiene l’anagrafica, senza le quotazioni, e resta compatibile con `titoli.json`.
+
+Su Streamlit Community Cloud o altri hosting con disco temporaneo, le modifiche locali possono andare perse al riavvio o al deploy: conservare il JSON sul PC per ricaricarlo, oppure aggiornare il file nel repository per renderle permanenti tra i deploy. L’anagrafica del server è condivisa tra gli utenti. L’editor non pubblica modifiche su GitHub.
 
 ## Comportamento
 
