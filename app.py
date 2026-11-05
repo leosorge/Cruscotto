@@ -9,7 +9,7 @@ from asset_catalog import editor_rows, assets_from_rows, save_assets, load_asset
 
 st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
-st.caption('Recupero za: Yahoo per ISIN → FT · metodo Untitled64')
+st.caption('Fondi IG / mm / za · Yahoo e FT per ISIN · Morningstar come fonte alternativa per IG e mm')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
 
@@ -145,6 +145,13 @@ else:
                 st.warning('Nessuna variazione disponibile per questa selezione.')
             st.dataframe(shown, hide_index=True, width='stretch')
     st.download_button('Scarica report CSV', frame.to_csv(index=False).encode('utf-8-sig'), 'finance_report.csv', 'text/csv')
+    if 'Stato' in frame:
+        missing = frame[frame['Stato'] != 'Disponibile']
+        if not missing.empty:
+            st.warning(f'{len(missing)} titoli senza quotazioni complete. Apri “Motivi dei dati mancanti” per i dettagli.')
+            with st.expander('Motivi dei dati mancanti'):
+                columns = [c for c in ['N.', 'Titolo', 'ISIN', 'Stato', 'Dettaglio'] if c in missing]
+                st.dataframe(missing[columns], hide_index=True, width='stretch')
     with st.expander('Riepilogo per banca'):
         st.caption('Media aritmetica delle variazioni disponibili, senza ponderazione patrimoniale.')
         st.dataframe(frame.groupby('Banca')['Variazione %'].agg(['count', 'mean', 'min', 'max']))

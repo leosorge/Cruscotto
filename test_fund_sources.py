@@ -35,3 +35,50 @@ def test_no_data_stays_missing():
     with patch('quotes.yahoo_serie',return_value=(None,None)),patch('quotes.ft_serie',return_value=(None,None)):
         row=fetch_asset({'name':'test','bank':'za','isin':'LU1046235906'},START,END)
         assert row['Ultimo prezzo'] is None and row['Fonte']=='N/D'
+
+
+def test_mm_and_ig_use_ft_without_a_ticker():
+    data = pd.Series([10, 12], index=pd.to_datetime(['2025-12-30', '2026-10-29']))
+    for bank in ('mm', 'IG'):
+        with patch('quotes.yahoo_serie', return_value=(None, None)) as yahoo, \
+             patch('quotes.ft_serie', return_value=(data, 'FT:test')) as ft, \
+             patch('quotes.fetch_nav') as morningstar:
+            row = fetch_asset({'name': 'test', 'bank': bank, 'isin': 'IE0009625199'}, date(2025,12,31), END)
+            assert row['Ultimo prezzo'] == 12 and row['Fonte'] == 'FT:test'
+            yahoo.assert_called_once()
+            ft.assert_called_once()
+            morningstar.assert_not_called()
+
+
+def test_configured_ticker_avoids_browser_and_search():
+    data = pd.DataFrame({'Close': [10, 12]}, index=pd.to_datetime(['2025-12-30', '2026-10-29']))
+    ticker = Mock(); ticker.history.return_value = data
+    with patch('yfinance.Ticker', return_value=ticker), patch('quotes.yahoo_serie') as search, \
+         patch('quotes.fetch_nav') as morningstar:
+        row = fetch_asset({'name': 'test', 'bank': 'mm', 'isin': 'IT0005618555', 'ticker': 'TEST.F'}, date(2025,12,31), END)
+        assert row['Ultimo prezzo'] == 12 and row['Fonte'] == 'Yahoo: TEST.F'
+        search.assert_not_called()
+        morningstar.assert_not_called()
+
+
+def test_invalid_isin_is_reported_without_remote_requests():
+    with patch('quotes.yahoo_serie') as yahoo, patch('quotes.ft_serie') as ft, patch('quotes.fetch_nav') as morningstar:
+        row = fetch_asset({'name': 'LHA', 'bank': 'mm', 'isin': 'IE000B2NLMV86'}, START, END)
+        assert row['Ultimo prezzo'] is None and 'ISIN non valido' in row['Dettaglio']
+        yahoo.assert_not_called(); ft.assert_not_called(); morningstar.assert_not_called()
+
+
+def test_bond_is_not_requested_as_a_fund():
+    with patch('quotes.yahoo_serie') as yahoo, patch('quotes.ft_serie') as ft, patch('quotes.fetch_nav') as morningstar:
+        row = fetch_asset({'name': 'BTP', 'bank': 'mm', 'isin': 'IT0005565392',
+                           'url': 'https://www.borsaitaliana.it/obbligazioni/btp-valore/scheda.html'}, START, END)
+        assert row['Ultimo prezzo'] is None and 'fonte dedicata' in row['Dettaglio']
+        yahoo.assert_not_called(); ft.assert_not_called(); morningstar.assert_not_called()
+
+
+def test_morningstar_remains_last_fallback():
+    raw = [{'date': '2025-12-30', 'nav': 10}, {'date': '2026-10-29', 'nav': 12}]
+    with patch('quotes.yahoo_serie', return_value=(None, None)), \
+         patch('quotes.ft_serie', return_value=(None, None)), patch('quotes.fetch_nav', return_value=raw):
+        row = fetch_asset({'name': 'test', 'bank': 'mm', 'isin': 'IE0009625199'}, date(2025,12,31), END)
+        assert row['Fonte'] == 'Morningstar' and row['Ultimo prezzo'] == 12
