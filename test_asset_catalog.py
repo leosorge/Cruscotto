@@ -42,6 +42,33 @@ def test_json_roundtrip_and_validation():
             load_assets_json(invalid)
 
 
+def test_explicit_delete_control(tmp_path):
+    from pathlib import Path
+    source = Path(__file__).parent
+    (tmp_path / 'app.py').write_text((source / 'app.py').read_text())
+    assets = json.loads((source / 'titoli.json').read_text())
+    path = tmp_path / 'titoli.json'
+    path.write_text(json.dumps(assets))
+    at = AppTest.from_file(str(tmp_path / 'app.py')).run(timeout=30)
+    at.toggle[0].set_value(True).run()
+    next(b for b in at.button if b.label == 'Elimina titoli selezionati').click().run()
+    assert at.warning and json.loads(path.read_text()) == assets
+    next(m for m in at.multiselect if m.label == 'Titoli da eliminare').set_value([1, 3])
+    at.session_state['catalog_editor_0'] = {
+        'edited_rows': {1: {'Titolo': 'Nome aggiornato'}},
+        'added_rows': [], 'deleted_rows': [],
+    }
+    next(b for b in at.button if b.label == 'Elimina titoli selezionati').click().run()
+    assert not at.exception
+    saved = json.loads(path.read_text())
+    assert len(saved) == len(assets) - 2
+    assert saved[0]['name'] == 'Nome aggiornato'
+    assert assets[0]['name'] not in [a['name'] for a in saved]
+    assert assets[2]['name'] not in [a['name'] for a in saved]
+    at.toggle[0].set_value(False).run()
+    assert at.dataframe[0].value['N.'].tolist() == list(range(1, 29))
+
+
 def test_app_import_and_reject_invalid_file(tmp_path):
     from io import BytesIO
     from pathlib import Path

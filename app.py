@@ -58,7 +58,7 @@ if editing:
         st.session_state['catalog_baseline'] = assets
     baseline = st.session_state['catalog_baseline']
     st.subheader('Modifica titoli')
-    st.caption('Modifica le celle; usa la riga vuota in fondo per aggiungere un titolo e seleziona le righe da eliminare. I numeri seguono l’ordine dell’anagrafica e restano uguali nei filtri. Dopo il salvataggio vengono ricalcolati.')
+    st.caption('Modifica le celle; usa la riga vuota in fondo per aggiungere un titolo. Per cancellare usa il comando Elimina titoli sotto la tabella. I numeri seguono l’ordine dell’anagrafica e vengono ricalcolati dopo il salvataggio.')
     st.info('Se cambi ISIN, il ticker e il link della vecchia classe vengono rimossi. Puoi indicare un nuovo ticker nella stessa modifica. Il salvataggio aggiorna titoli.json sul server; su hosting con disco temporaneo, scarica anche una copia JSON.')
     with st.form('catalog_form'):
         edited = st.data_editor(
@@ -72,9 +72,21 @@ if editing:
                 'Ticker': st.column_config.TextColumn('Ticker Yahoo'),
             }, key='catalog_editor_' + str(st.session_state.get('catalog_revision', 0)))
         submitted = st.form_submit_button('Salva anagrafica')
-    if submitted:
+        st.markdown('**Elimina titoli**')
+        to_delete = st.multiselect(
+            'Titoli da eliminare', options=list(range(1, len(baseline) + 1)),
+            format_func=lambda n: f"{n}. {baseline[n - 1]['bank']} · {baseline[n - 1]['name']}",
+            key='delete_assets_' + str(st.session_state.get('catalog_revision', 0)))
+        st.caption('Il pulsante elimina le voci scelte e salva anche le altre modifiche presenti nella tabella.')
+        delete_submitted = st.form_submit_button('Elimina titoli selezionati')
+    if delete_submitted and not to_delete:
+        st.warning('Seleziona almeno un titolo da eliminare.')
+    if submitted or (delete_submitted and to_delete):
         try:
-            updated_assets = assets_from_rows(edited.to_dict('records'), baseline)
+            records = edited.to_dict('records')
+            if delete_submitted:
+                records = [row for row in records if row.get('N') not in to_delete]
+            updated_assets = assets_from_rows(records, baseline)
             save_assets(catalog_path, updated_assets, baseline)
         except (ValueError, OSError) as exc:
             st.error(str(exc))
