@@ -12,6 +12,27 @@ st.title('Finance · Cruscotto')
 st.caption('Fondi IG / mm / za · Yahoo e FT per ISIN · Morningstar come fonte alternativa per IG e mm')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
+asset_pages = {
+    asset.get('deltahedge_isin') or asset.get('isin', ''): asset.get('url', '')
+    for asset in assets
+}
+
+
+def with_isin_links(frame):
+    """Mostra l'ISIN come testo cliccabile senza alterare i dati esportati."""
+    linked = frame.copy()
+    if 'ISIN' in linked:
+        linked['ISIN'] = linked['ISIN'].map(
+            lambda isin: f"{asset_pages.get(str(isin), '')}#{isin}"
+            if isin and asset_pages.get(str(isin)) else isin
+        )
+    return linked
+
+
+isin_link_column = st.column_config.LinkColumn(
+    'ISIN', width=190, help='Apri la pagina informativa dello strumento',
+    display_text=r'.*#([A-Z]{2}[A-Z0-9]{9}[0-9])$'
+)
 
 
 def catalog_updated():
@@ -112,12 +133,13 @@ if update:
     st.session_state['updated'] = datetime.now().isoformat(timespec='seconds')
 if 'report' not in st.session_state:
     st.write('Premi Aggiorna quotazioni per recuperare i dati.')
-    st.dataframe(pd.DataFrame([{'N.': i, 'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for i, a in enumerate(assets, 1) if a['bank'] in banks]), hide_index=True, width='stretch',
+    catalog_frame = pd.DataFrame([{'N.': i, 'Banca': a['bank'], 'Titolo': a['name'], 'ISIN': a.get('deltahedge_isin') or a.get('isin', ''), 'Valuta': a.get('currency', 'EUR')} for i, a in enumerate(assets, 1) if a['bank'] in banks])
+    st.dataframe(with_isin_links(catalog_frame), hide_index=True, width='stretch',
                  column_config={
                      'N.': st.column_config.NumberColumn(format='%d', width=62),
                      'Banca': st.column_config.TextColumn(width=74),
                      'Titolo': st.column_config.TextColumn(width=324),
-                     'ISIN': st.column_config.TextColumn(width=190),
+                     'ISIN': isin_link_column,
                      'Valuta': st.column_config.TextColumn(width=74),
                  })
 else:
@@ -132,8 +154,9 @@ else:
     c1.metric('Titoli selezionati', len(frame))
     c2.metric('Prezzi disponibili', int(frame['Ultimo prezzo'].notna().sum()))
     c3.metric('Variazioni disponibili', int(frame['Variazione %'].notna().sum()))
-    tabs = st.tabs(['Tutti', 'IG', 'mm', 'za'])
-    for label, tab in zip(['Tutti', 'IG', 'mm', 'za'], tabs):
+    tab_labels = ['Tutti', 'za', 'mm', 'IG']
+    tabs = st.tabs(tab_labels)
+    for label, tab in zip(tab_labels, tabs):
         with tab:
             shown = frame if label == 'Tutti' else frame[frame.Banca == label]
             valid = shown.dropna(subset=['Variazione %']).sort_values('Variazione %')
@@ -143,7 +166,8 @@ else:
                 st.plotly_chart(fig, width='stretch', key=f'chart_{label}')
             else:
                 st.warning('Nessuna variazione disponibile per questa selezione.')
-            st.dataframe(shown, hide_index=True, width='stretch')
+            st.dataframe(with_isin_links(shown), hide_index=True, width='stretch',
+                         column_config={'ISIN': isin_link_column})
     st.download_button('Scarica report CSV', frame.to_csv(index=False).encode('utf-8-sig'), 'finance_report.csv', 'text/csv')
     if 'Stato' in frame:
         missing = frame[frame['Stato'] != 'Disponibile']
@@ -151,9 +175,10 @@ else:
             st.warning(f'{len(missing)} titoli senza quotazioni complete. Apri “Motivi dei dati mancanti” per i dettagli.')
             with st.expander('Motivi dei dati mancanti'):
                 columns = [c for c in ['N.', 'Titolo', 'ISIN', 'Stato', 'Dettaglio'] if c in missing]
-                st.dataframe(missing[columns], hide_index=True, width='stretch')
+                st.dataframe(with_isin_links(missing[columns]), hide_index=True, width='stretch',
+                             column_config={'ISIN': isin_link_column})
     with st.expander('Riepilogo per banca'):
         st.caption('Media aritmetica delle variazioni disponibili, senza ponderazione patrimoniale.')
         st.dataframe(frame.groupby('Banca')['Variazione %'].agg(['count', 'mean', 'min', 'max']))
-    st.caption('I titoli senza storico restano N/D. I link Borsa presenti nei notebook sono conservati per controllo manuale; nessun prezzo viene dedotto da testo generico della pagina.')
+    st.caption('I titoli senza storico restano N/D. Clicca un ISIN per aprire la pagina informativa dello strumento; nessun prezzo viene dedotto da testo generico della pagina.')
 

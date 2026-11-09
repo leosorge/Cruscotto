@@ -3,42 +3,48 @@
    "bank": "mm",
    "currency": "EUR",
    "name": "MBB Global High Yield SA",
-   "isin": "IE0009625199"
+   "isin": "IE0009625199",
+   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE0009625199:EUR"
 },  
 {
   "bank": "mm",
   "currency": "EUR",
   "name": "M. Obbligazionario Italia IIPIR LA EUR", 
   "isin": "IT0005618555",
-  "ticker": "0P0001JWW3.F"
+  "ticker": "0P0001JWW3.F",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IT0005618555:EUR"
 },
 {
   "bank": "mm",
   "currency": "EUR",
   "name": "MBB Global Leaders LA",
   "isin": "IE00BJYLJ823",
-  "ticker": "0P0001HH0V.F"
+  "ticker": "0P0001HH0V.F",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BJYLJ823:EUR"
   },
   {
   "bank": "mm",
   "currency": "EUR",
   "name": "MBB Mediolanum Global Selection LHA EUR PIC",
   "isin": "IE00B2NLMV86",
-  "ticker": ""
+  "ticker": "",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00B2NLMV86:EUR"
 },
 {
   "bank": "mm",
   "currency": "EUR",
   "name": "MBB MS Global Selection SA EUR PIC",
   "isin": "IE00B2NLMW93",
-  "ticker": ""
+  "ticker": "",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00B2NLMW93:EUR"
 },
 {
   "bank": "mm",
   "currency": "EUR",
   "name": "MBB Innovative Thematic Opp. LA",
   "isin": "IE00BG0D0J96",
-  "ticker": "0P0001EU36.F"
+  "ticker": "0P0001EU36.F",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BG0D0J96:EUR"
 },
  {
   "bank": "mm",
@@ -59,113 +65,110 @@
   "bank": "IG",
   "isin": "LU1130035709",
   "ticker": "0P00014ZKN.F",
-  "currency": "EUR"
+  "currency": "EUR",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU1130035709:EUR"
 },
 {
   "name": "Pictet Security",
   "bank": "IG",
   "isin": "LU0270905242",
   "ticker": "0P00006SYZ.F",
-  "currency": "EUR"
+  "currency": "EUR",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0270905242:EUR"
 },
 {
   "name": "Pictet Global Megatrend",
   "bank": "IG",
   "isin": "LU0391944815",
   "ticker": "0P0000I3XF.F",
-  "currency": "EUR"
+  "currency": "EUR",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0391944815:EUR"
 },
 {
   "name": "MS Global Brands",
   "bank": "IG",
   "isin": "LU0119620416",
   "ticker": "MSJD.F",
-  "currency": "USD"
+  "currency": "USD",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0119620416:USD"
 },
 {
   "name": "Lux Im Pictet Asian Equities",
   "bank": "IG",
   "isin": "LU0255273566",
   "ticker": "0P000069HS.F",
-  "currency": "EUR"
+  "currency": "EUR",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0255273566:EUR"
 },
   {
     "name": "Lux Im Flexible Glob Equities",
     "bank": "IG",
     "isin": "LU0255290578",
     "ticker": "0P000069DB.F",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0255290578:EUR"
   },
   {
     "name": "SCHRODERS STRAT CREDIT",
     "bank": "za",
     "isin": "LU1046235906",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU1046235906:EUR"
   },
   {
     "name": "CANDRIAM BONDS GLB HY",
     "bank": "za",
     "isin": "LU2098774149",
-    "currency": "EUR"
-  },
-  {
-    "name": "CARMIGNAC FLEX CREDIT",
-    "bank": "za",
-    "isin": "LU1623762843",
-    "currency": "EUR"
-  },
-  {
-    "name": "DNCA ALPHA BONDS",
-    "bank": "za",
-    "isin": "LU1694789378",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU2098774149:EUR"
   },
   {
     "name": "GS EUROCREDIT",
     "bank": "za",
     "isin": "LU0555026250",
-    "currency": "EUR"
-  },
-  {
-    "name": "KAIROS BOND PLUS",
-    "bank": "za",
-    "isin": "LU0680824983",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0555026250:EUR"
   },
   {
     "name": "PICTET EUR ST HY",
     "bank": "za",
-    "isin": "LU0733672124",
-    "currency": "EUR"
+    "isin": "LU0726357527",
+    "currency": "EUR",
+    "url": "https://www.borsaitaliana.it/borsa/fondi/dettaglio/2FADB126471.html?lang=it"
   },
   {
     "name": "BGF WORLD TECH",
     "bank": "za",
     "isin": "LU0376438312",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0376438312:EUR"
   },
   {
     "name": "PICTET GEO",
     "bank": "za",
     "isin": "LU0503631631",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0503631631:EUR"
   },
   {
     "name": "PIMCO MLP ENERGY INFR",
     "bank": "za",
     "isin": "IE00BRS5SW33",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BRS5SW33:EUR"
   },
   {
     "name": "ALGEBRIS FIN CREDIT",
     "bank": "za",
     "isin": "IE00B81TMV64",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00B81TMV64:EUR"
   },
   {
     "name": "AGI CREDIT OPP PLUS",
     "bank": "za",
     "isin": "LU2002383896",
-    "currency": "EUR"
+    "currency": "EUR",
+    "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU2002383896:EUR"
   }
 ]

@@ -30,6 +30,8 @@ Le quantità sono convenzionalmente uno. Non vengono mostrate somme patrimoniali
 
 I titoli senza storico o ticker utilizzabile restano N/D. Il riquadro **Motivi dei dati mancanti** mostra gli identificativi malformati e i tentativi senza risultati. Un ISIN deve avere 12 caratteri; questo controllo non ne certifica l'identità. Le voci riconosciute come obbligazioni o certificati dal link Borsa Italiana, oppure dal campo opzionale `type` (`bond` o `certificate`), non vengono inviate ai servizi per fondi: serve un ticker Yahoo verificato o una fonte dedicata. I link sono conservati per controllo manuale; lo scraping generico del notebook è stato escluso perché potrebbe riconoscere numeri che non sono prezzi. Non sono stati inventati prezzi.
 
+Nelle tabelle di consultazione ogni ISIN è cliccabile e apre la pagina informativa configurata nell'anagrafica (Borsa Italiana per i titoli quotati disponibili, FT Markets per i fondi). Il CSV conserva invece l'ISIN puro. Nei grafici le schede sono ordinate `Tutti`, `za`, `mm`, `IG`.
+
 ## Verifiche
 
 Il progetto include controlli sulla normalizzazione dello storico, sulle date e sui dati mancanti. Le quotazioni live e il deployment Streamlit devono essere verificati nell'ambiente di destinazione.

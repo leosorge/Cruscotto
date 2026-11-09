@@ -28,6 +28,19 @@ def test_report_with_only_one_bank_has_distinct_charts():
     at.multiselect[0].set_value(['mm']).run()
     assert not at.exception
     assert len(at.get('plotly_chart')) == 2
+    assert [tab.label for tab in at.tabs] == ['Tutti', 'za', 'mm', 'IG']
+
+
+def test_requested_catalog_changes_and_links():
+    from pathlib import Path
+    assets = json.loads(Path(__file__).with_name('titoli.json').read_text(encoding='utf-8'))
+    assert len(assets) == 23
+    assert not {'CARMIGNAC FLEX CREDIT', 'DNCA ALPHA BONDS', 'KAIROS BOND PLUS'} & {
+        asset['name'] for asset in assets
+    }
+    pictet = next(asset for asset in assets if asset['name'] == 'PICTET EUR ST HY')
+    assert pictet['isin'] == 'LU0726357527'
+    assert all(asset.get('url', '').startswith('https://') for asset in assets)
 
 
 def test_edit_add_delete_and_atomic_save(tmp_path):
