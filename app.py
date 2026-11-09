@@ -154,14 +154,25 @@ else:
     c1.metric('Titoli selezionati', len(frame))
     c2.metric('Prezzi disponibili', int(frame['Ultimo prezzo'].notna().sum()))
     c3.metric('Variazioni disponibili', int(frame['Variazione %'].notna().sum()))
-    tab_labels = ['Tutti', 'za', 'mm', 'IG']
+    tab_labels = ['Tutti', 'IG', 'mm', 'za']
     tabs = st.tabs(tab_labels)
     for label, tab in zip(tab_labels, tabs):
         with tab:
             shown = frame if label == 'Tutti' else frame[frame.Banca == label]
-            valid = shown.dropna(subset=['Variazione %']).sort_values('Variazione %')
+            valid = shown.dropna(subset=['Variazione %']).copy()
+            if label == 'Tutti':
+                # Nel grafico complessivo za e IG sono scambiati, con mm al centro.
+                bank_order = {'za': 0, 'mm': 1, 'IG': 2}
+                valid['_bank_order'] = valid['Banca'].map(bank_order)
+                valid = valid.sort_values(['_bank_order', 'Variazione %']).drop(columns='_bank_order')
+            else:
+                valid = valid.sort_values('Variazione %')
             if not valid.empty:
                 fig = px.bar(valid, x='Variazione %', y='Titolo', color='Banca', orientation='h', hover_data=['Fonte', 'Data prezzo'], height=max(400, len(valid)*32))
+                if label == 'Tutti':
+                    # Plotly ordina l'asse Y dal basso: l'inversione rende l'ordine
+                    # visivo dall'alto za, mm, IG.
+                    fig.update_yaxes(categoryorder='array', categoryarray=valid['Titolo'].tolist()[::-1])
                 fig.add_vline(x=0)
                 st.plotly_chart(fig, width='stretch', key=f'chart_{label}')
             else:
