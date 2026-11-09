@@ -41,6 +41,11 @@ def test_requested_catalog_changes_and_links():
     assert 'CARMIGNAC FLEX CREDIT' in {asset['name'] for asset in assets}
     pictet = next(asset for asset in assets if asset['name'] == 'PICTET EUR ST HY')
     assert pictet['isin'] == 'LU0726357527'
+    assert 'Pictet Security' not in {asset['name'] for asset in assets}
+    china = next(asset for asset in assets if asset['isin'] == 'LU1255011097')
+    assert china['bank'] == 'IG'
+    assert china['name'] == 'JPM China A-Share Opportunities A Acc EUR'
+    assert 'borsaitaliana.it' in china['url']
     assert all(asset.get('url', '').startswith('https://') for asset in assets)
 
 

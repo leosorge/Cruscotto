@@ -69,12 +69,12 @@
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU1130035709:EUR"
 },
 {
-  "name": "Pictet Security",
+  "name": "JPM China A-Share Opportunities A Acc EUR",
   "bank": "IG",
-  "isin": "LU0270905242",
-  "ticker": "0P00006SYZ.F",
+  "isin": "LU1255011097",
+  "ticker": "",
   "currency": "EUR",
-  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0270905242:EUR"
+  "url": "https://www.borsaitaliana.it/borsa/fondi/dettaglio/2FADB416762.html?lang=it"
 },
 {
   "name": "Pictet Global Megatrend",
