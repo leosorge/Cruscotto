@@ -85,12 +85,12 @@
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0391944815:EUR"
 },
 {
-  "name": "MS Global Brands",
+  "name": "BGF Flex",
   "bank": "IG",
-  "isin": "LU0119620416",
-  "ticker": "MSJD.F",
-  "currency": "USD",
-  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0119620416:USD"
+  "isin": "LU0224105980",
+  "ticker": "",
+  "currency": "EUR",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0224105980:EUR"
 },
 {
   "name": "Lux Im Pictet Asian Equities",
