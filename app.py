@@ -5,11 +5,11 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from quotes import fetch_asset
-from asset_catalog import editor_rows, assets_from_rows, save_assets, load_assets_json
+from asset_catalog import BANKS, editor_rows, assets_from_rows, save_assets, load_assets_json
 
-st.set_page_config(page_title='Finance · IG / mm / za', page_icon='📊', layout='wide')
+st.set_page_config(page_title='Finance · IG / mm / za / ing', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
-st.caption('Fondi IG / mm / za · Yahoo e FT per ISIN · Morningstar come fonte alternativa per IG e mm')
+st.caption('Fondi IG / mm / za / ing · Yahoo e FT per ISIN · Morningstar come fonte alternativa per IG, mm e ing')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
 asset_pages = {
@@ -42,13 +42,13 @@ def catalog_updated():
     st.session_state['catalog_saved'] = True
 
 
-st.caption(f'Lista di osservazione · IG / mm / za · {len(assets)} titoli')
+st.caption(f'Lista di osservazione · IG / mm / za / ing · {len(assets)} titoli')
 st.info('Quantità convenzionale: 1 per titolo. Il cruscotto confronta prezzi e variazioni; non calcola il valore del patrimonio. Le variazioni dei prezzi non includono cedole o distribuzioni.')
 with st.sidebar:
     st.header('Periodo e filtri')
     start = st.date_input('Data di confronto', date(date.today().year, 1, 1), max_value=date.today())
     end = st.date_input('Data finale', date.today(), min_value=start, max_value=date.today())
-    banks = st.multiselect('Banche', ['IG', 'mm', 'za'], default=['IG', 'mm', 'za'])
+    banks = st.multiselect('Banche', list(BANKS), default=list(BANKS))
     update = st.button('Aggiorna quotazioni', type='primary', width='stretch')
     st.caption('Il prezzo iniziale è l’ultima quotazione disponibile entro la data di confronto. Ogni prezzo riporta la propria data.')
     editing = st.toggle('Modifica anagrafica')
@@ -87,7 +87,7 @@ if editing:
             num_rows='dynamic', hide_index=True, width='stretch', disabled=['N'],
             column_config={
                 'N': st.column_config.NumberColumn('N.', format='%d', width=62),
-                'Banca': st.column_config.SelectboxColumn(options=['IG', 'mm', 'za'], required=True, width=74),
+                'Banca': st.column_config.SelectboxColumn(options=list(BANKS), required=True, width=74),
                 'Titolo': st.column_config.TextColumn(required=True, width=324),
                 'ISIN': st.column_config.TextColumn(width=190),
                 'Valuta': st.column_config.TextColumn(default='EUR', required=True, width=74),
@@ -154,15 +154,16 @@ else:
     c1.metric('Titoli selezionati', len(frame))
     c2.metric('Prezzi disponibili', int(frame['Ultimo prezzo'].notna().sum()))
     c3.metric('Variazioni disponibili', int(frame['Variazione %'].notna().sum()))
-    tab_labels = ['Tutti', 'IG', 'mm', 'za']
+    tab_labels = ['Tutti', *BANKS]
     tabs = st.tabs(tab_labels)
     for label, tab in zip(tab_labels, tabs):
         with tab:
             shown = frame if label == 'Tutti' else frame[frame.Banca == label]
             valid = shown.dropna(subset=['Variazione %']).copy()
             if label == 'Tutti':
-                # Nel grafico complessivo za e IG sono scambiati, con mm al centro.
-                bank_order = {'za': 0, 'mm': 1, 'IG': 2}
+                # Nel grafico complessivo za e IG sono scambiati, con mm al centro;
+                # i nuovi fondi ing seguono il gruppo IG.
+                bank_order = {'za': 0, 'mm': 1, 'IG': 2, 'ing': 3}
                 valid['_bank_order'] = valid['Banca'].map(bank_order)
                 valid = valid.sort_values(['_bank_order', 'Variazione %']).drop(columns='_bank_order')
             else:
@@ -171,7 +172,7 @@ else:
                 fig = px.bar(valid, x='Variazione %', y='Titolo', color='Banca', orientation='h', hover_data=['Fonte', 'Data prezzo'], height=max(400, len(valid)*32))
                 if label == 'Tutti':
                     # Plotly ordina l'asse Y dal basso: l'inversione rende l'ordine
-                    # visivo dall'alto za, mm, IG.
+                    # visivo dall'alto za, mm, IG, ing.
                     fig.update_yaxes(categoryorder='array', categoryarray=valid['Titolo'].tolist()[::-1])
                 fig.add_vline(x=0)
                 st.plotly_chart(fig, width='stretch', key=f'chart_{label}')

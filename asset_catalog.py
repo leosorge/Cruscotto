@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 import tempfile
 
+BANKS = ('IG', 'mm', 'za', 'ing')
+
 
 def load_assets_json(data):
     """Legge un backup senza perdere ticker, link o identificativi alternativi."""
@@ -17,8 +19,8 @@ def load_assets_json(data):
     for position, asset in enumerate(payload, 1):
         if not isinstance(asset, dict) or any(not isinstance(v, str) for v in asset.values()):
             raise ValueError(f'Riga {position}: ogni titolo deve contenere campi testuali.')
-        if not asset.get('name', '').strip() or asset.get('bank') not in ('IG', 'mm', 'za'):
-            raise ValueError(f'Riga {position}: indicare titolo e banca (IG, mm o za).')
+        if not asset.get('name', '').strip() or asset.get('bank') not in BANKS:
+            raise ValueError(f'Riga {position}: indicare titolo e banca (IG, mm, za o ing).')
     # Usa gli stessi controlli dell’editor; conserva il formato originale dei backup.
     assets_from_rows(editor_rows(payload), payload)
     return payload
@@ -42,7 +44,7 @@ def assets_from_rows(rows, originals):
         original = originals[int(number) - 1].copy() if number is not None and str(number) not in ('nan', '<NA>') else {}
         bank, name = value('Banca'), value('Titolo')
         isin, currency, ticker = value('ISIN').upper(), value('Valuta').upper(), value('Ticker')
-        if bank not in ('IG', 'mm', 'za') or not name:
+        if bank not in BANKS or not name:
             raise ValueError(f'Riga {position}: indicare banca e titolo.')
         if isin and not re.fullmatch(r'[A-Z]{2}[A-Z0-9]{9}[0-9]', isin):
             raise ValueError(f'Riga {position}: ISIN non valido (servono 12 caratteri).')

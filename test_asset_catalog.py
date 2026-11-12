@@ -28,14 +28,20 @@ def test_report_with_only_one_bank_has_distinct_charts():
     at.multiselect[0].set_value(['mm']).run()
     assert not at.exception
     assert len(at.get('plotly_chart')) == 2
-    assert [tab.label for tab in at.tabs] == ['Tutti', 'IG', 'mm', 'za']
+    assert [tab.label for tab in at.tabs] == ['Tutti', 'IG', 'mm', 'za', 'ing']
 
 
 def test_requested_catalog_changes_and_links():
     from pathlib import Path
     assets = json.loads(Path(__file__).with_name('titoli.json').read_text(encoding='utf-8'))
-    assert len(assets) == 23
-    assert not {'CANDRIAM BONDS GLB HY', 'DNCA ALPHA BONDS', 'KAIROS BOND PLUS'} & {
+    assert len(assets) == 24
+    assert not {
+        'CANDRIAM BONDS GLB HY',
+        'DNCA ALPHA BONDS',
+        'KAIROS BOND PLUS',
+        'MBB Innovative Thematic Opp. LA',
+        'BTP VAL10/28 S-U CUM',
+    } & {
         asset['name'] for asset in assets
     }
     assert 'CARMIGNAC FLEX CREDIT' in {asset['name'] for asset in assets}
@@ -46,6 +52,11 @@ def test_requested_catalog_changes_and_links():
     assert china['bank'] == 'IG'
     assert china['name'] == 'JPM China A-Share Opportunities A Acc EUR'
     assert 'borsaitaliana.it' in china['url']
+    ing = [asset for asset in assets if asset['bank'] == 'ing']
+    assert [asset['isin'] for asset in ing] == [
+        'LU0028118809', 'LU1240328812', 'LU2606014152'
+    ]
+    assert all(asset['currency'] == 'EUR' for asset in ing)
     assert all(asset.get('url', '').startswith('https://') for asset in assets)
 
 
@@ -72,6 +83,11 @@ def test_validation_and_empty_catalog():
     with pytest.raises(ValueError, match='ISIN non valido'):
         assets_from_rows([dict(Banca='za', Titolo='Errore', ISIN='errato', Valuta='EUR')], [])
     assert assets_from_rows([], []) == []
+
+
+def test_ing_is_a_supported_bank():
+    rows = [dict(Banca='ing', Titolo='Invesco', ISIN='LU0028118809', Valuta='EUR')]
+    assert assets_from_rows(rows, [])[0]['bank'] == 'ing'
 
 
 def test_json_roundtrip_and_validation():

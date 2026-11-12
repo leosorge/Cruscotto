@@ -38,14 +38,6 @@
   "ticker": "",
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00B2NLMW93:EUR"
 },
-{
-  "bank": "mm",
-  "currency": "EUR",
-  "name": "MBB Innovative Thematic Opp. LA",
-  "isin": "IE00BG0D0J96",
-  "ticker": "0P0001EU36.F",
-  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BG0D0J96:EUR"
-},
  {
   "bank": "mm",
   "currency": "EUR",
@@ -54,11 +46,25 @@
   "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/XS2911464654-ETLX.html?lang=it"
 },
 {
-  "bank": "mm",
+  "bank": "ing",
   "currency": "EUR",
-  "name": "BTP VAL10/28 S-U CUM",
-  "isin": "IT0005565392",
-  "url": "https://www.borsaitaliana.it/obbligazioni/btp-valore/avvisodiiniziodistribuzionebtpvaloreiiemissione_pdf.htm"
+  "name": "Invesco Pan European Equity Fund A Acc EUR",
+  "isin": "LU0028118809",
+  "url": "https://www.invesco.com/de/de/financial-products/sicav/invesco-pan-european-equity-fund-a-acc-shares.html"
+},
+{
+  "bank": "ing",
+  "currency": "EUR",
+  "name": "Invesco Euro Equity Fund A Acc EUR",
+  "isin": "LU1240328812",
+  "url": "https://dng-api.invesco.com/cache/v1/accounts/en_CH/shareclasses/LU1240328812/factsheet?documentType=MR&idType=isin&productType=GPR"
+},
+{
+  "bank": "ing",
+  "currency": "EUR",
+  "name": "Invesco Global Equity Income Fund A Acc EUR",
+  "isin": "LU2606014152",
+  "url": "https://www.invesco.com/ie/en/financial-products/sicav/invesco-global-equity-income-fund-a-acc-shares.html"
 },
 {
   "name": "Lux Pictet Future Trends",
@@ -85,12 +91,12 @@
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0391944815:EUR"
 },
 {
-  "name": "BGF Flex",
+  "name": "MS Global Brands",
   "bank": "IG",
-  "isin": "LU0224105980",
-  "ticker": "",
-  "currency": "EUR",
-  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0224105980:EUR"
+  "isin": "LU0119620416",
+  "ticker": "MSJD.F",
+  "currency": "USD",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0119620416:USD"
 },
 {
   "name": "Lux Im Pictet Asian Equities",
