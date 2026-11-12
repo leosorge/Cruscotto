@@ -41,9 +41,10 @@
  {
   "bank": "mm",
   "currency": "EUR",
-  "name": "Certificate CPI/cpo 25 BNP 5 ",
-  "isin": "XS2911464654",
-  "url": "https://www.borsaitaliana.it/borsa/cw-e-certificates/eurotlx/scheda/XS2911464654-ETLX.html?lang=it"
+  "name": "MBB Innovative Thematic Opp. LA",
+  "isin": "IE00BG0D0J96",
+  "ticker": "0P0001EU36.F",
+  "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BG0D0J96:EUR"
 },
 {
   "bank": "ing",

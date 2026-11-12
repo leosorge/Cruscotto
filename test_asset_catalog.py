@@ -39,11 +39,14 @@ def test_requested_catalog_changes_and_links():
         'CANDRIAM BONDS GLB HY',
         'DNCA ALPHA BONDS',
         'KAIROS BOND PLUS',
-        'MBB Innovative Thematic Opp. LA',
+        'Certificate CPI/cpo 25 BNP 5 ',
         'BTP VAL10/28 S-U CUM',
     } & {
         asset['name'] for asset in assets
     }
+    mm = [asset for asset in assets if asset['bank'] == 'mm']
+    assert mm[5]['name'] == 'MBB Innovative Thematic Opp. LA'
+    assert mm[5]['isin'] == 'IE00BG0D0J96'
     assert 'CARMIGNAC FLEX CREDIT' in {asset['name'] for asset in assets}
     pictet = next(asset for asset in assets if asset['name'] == 'PICTET EUR ST HY')
     assert pictet['isin'] == 'LU0726357527'
