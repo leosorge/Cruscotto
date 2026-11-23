@@ -43,7 +43,6 @@
   "currency": "EUR",
   "name": "MBB Innovative Thematic Opp. LA",
   "isin": "IE00BG0D0J96",
-  "ticker": "0P0001EU36.F",
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=IE00BG0D0J96:EUR"
 },
 {
@@ -95,7 +94,6 @@
   "name": "MS Global Brands",
   "bank": "IG",
   "isin": "LU0119620416",
-  "ticker": "MSJD.F",
   "currency": "USD",
   "url": "https://markets.ft.com/data/funds/tearsheet/summary?s=LU0119620416:USD"
 },
