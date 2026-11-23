@@ -3,6 +3,8 @@
 # Explicit share-class identities verified against Morningstar fund pages.
 # These are not inferred from Yahoo tickers (which may identify other classes).
 VERIFIED_FUNDS = {
+    "IE00BG0D0J96": {"securityID": "F000011CZT", "name": "Mediolanum Best Brands Innovative Thematic Opportunities L",
+                     "source": "https://www.fondionline.it/found-pdf?isin=F000011CZT"},
     "LU0171310443": {"securityID": "0P0001FJIH", "name": "BGF World Technology A2 USD (EUR)",
                      "source": "https://www.morningstarfunds.ie/ie/funds/snapshot/snapshot.aspx?id=0P0001FJIH"},
     "LU1046235906": {"securityID": "F00000T8RJ", "name": "Schroder Strategic Credit C Accumulation EUR Hedged",
