@@ -67,7 +67,16 @@ def ft_serie(isin, start, end, currency="EUR"):
     if not table:
         raise ValueError("Storico FT assente")
     frame = pd.read_html(io.StringIO(f"<table>{table}</table>"))[0]
-    dates = frame["Date"].astype(str).str.extract(r"([A-Z][a-z]+ \d{1,2}, \d{4})")[0]
-    series = pd.Series(frame["Close"].astype(float).values,
-                       index=pd.to_datetime(dates, format="%B %d, %Y"))
-    return series.sort_index().dropna(), f"FT: {symbol}"
+    if not {"Date", "Close"}.issubset(frame.columns):
+        # L'endpoint AJAX può restituire solo il corpo della tabella.
+        if frame.shape[1] != 6 or list(frame.columns) != list(range(6)):
+            raise ValueError("Formato dello storico FT non riconosciuto")
+        frame.columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
+    date_text = frame["Date"].astype(str).str.extract(r"([A-Z][a-z]+ \d{1,2}, \d{4})")[0]
+    dates = pd.to_datetime(date_text, format="%B %d, %Y", errors="coerce")
+    prices = pd.to_numeric(frame["Close"], errors="coerce")
+    valid = dates.notna() & prices.notna()
+    if not valid.any():
+        raise ValueError("Storico FT senza date e prezzi validi")
+    series = pd.Series(prices[valid].to_numpy(), index=dates[valid])
+    return series.sort_index(), f"FT: {symbol}"
