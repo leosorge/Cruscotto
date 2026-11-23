@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 from pathlib import Path
 import json
@@ -9,7 +10,7 @@ from asset_catalog import BANKS, editor_rows, assets_from_rows, save_assets, loa
 
 st.set_page_config(page_title='Finance · IG / mm / za / ing', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
-st.caption('Fondi IG / mm / za / ing · Yahoo, FT e Morningstar · Verifica dell’ISIN per le quotazioni')
+st.caption('Fondi IG / mm / za / ing · FT e Morningstar per ISIN · Yahoo per i titoli con solo ticker')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
 asset_pages = {
@@ -118,15 +119,24 @@ if editing:
     st.stop()
 st.session_state.pop('catalog_baseline', None)
 if update:
-    rows = []
+    rows = [None] * len(assets)
     progress = st.progress(0, text='Recupero quotazioni')
-    for i, asset in enumerate(assets):
-        progress.progress(i / len(assets), text=f"{asset['bank']} · {asset['name']}")
-        try:
-            rows.append(fetch_asset(asset, start, end))
-        except Exception as exc:
-            rows.append({'Titolo': asset['name'], 'Banca': asset['bank'], 'ISIN': asset.get('deltahedge_isin') or asset.get('isin', ''), 'Stato': 'Errore', 'Dettaglio': str(exc)[:200]})
-        rows[-1] = {'N.': i + 1, **rows[-1]}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        pending = {
+            executor.submit(fetch_asset, asset, start, end): (i, asset)
+            for i, asset in enumerate(assets)
+        }
+        for completed, future in enumerate(as_completed(pending), 1):
+            i, asset = pending[future]
+            try:
+                row = future.result()
+            except Exception as exc:
+                row = {'Titolo': asset['name'], 'Banca': asset['bank'],
+                       'ISIN': asset.get('deltahedge_isin') or asset.get('isin', ''),
+                       'Stato': 'Errore', 'Dettaglio': str(exc)[:200]}
+            rows[i] = {'N.': i + 1, **row}
+            progress.progress(completed / len(assets),
+                              text=f"Quotazioni elaborate: {completed}/{len(assets)}")
     progress.empty()
     st.session_state['report'] = pd.DataFrame(rows) if rows else pd.DataFrame(columns=['N.', 'Titolo', 'Banca', 'ISIN'])
     st.session_state['period'] = (start, end)
