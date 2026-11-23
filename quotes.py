@@ -3,7 +3,7 @@ from datetime import date, timedelta
 import re
 import pandas as pd
 from morningstar_process import fetch_nav
-from fund_sources import yahoo_serie, ft_serie
+from fund_sources import yahoo_serie, yahoo_ticker_history, ft_serie
 
 def normalize_history(raw):
     if isinstance(raw, pd.Series):
@@ -36,17 +36,20 @@ def fetch_asset(asset, baseline, end):
     source = 'N/D'
     start = baseline - timedelta(days=20)
     isin = asset.get('deltahedge_isin') or asset.get('isin', '')
+    currency = asset.get('currency', 'EUR')
     ticker = asset.get('ticker')
     if not ticker and asset.get('isin', '').endswith('.F'):
         ticker = asset['isin']
     valid_isin = bool(re.fullmatch(r'[A-Z]{2}[A-Z0-9]{9}[0-9]', isin))
     if isin and not valid_isin and isin != ticker:
         errors.append(f'ISIN non valido: {isin} (richiesti 12 caratteri)')
-    # Il ticker configurato evita l'avvio del browser per i titoli già disponibili.
-    if history is None and ticker:
+    # Un ticker esplicito richiede la stessa verifica della ricerca automatica.
+    if ticker:
         try:
-            import yfinance as yf
-            raw = yf.Ticker(ticker).history(start=start.isoformat(), end=(end + timedelta(days=1)).isoformat(), auto_adjust=False, timeout=12)
+            expected_isin = isin if isin and isin != ticker else ''
+            if expected_isin and not valid_isin:
+                raise ValueError(f'ISIN non valido: {isin}')
+            raw = yahoo_ticker_history(ticker, start, end, currency, expected_isin)
             history = normalize_history(raw)
             source = 'Yahoo: ' + ticker
         except Exception as exc:
@@ -57,8 +60,8 @@ def fetch_asset(asset, baseline, end):
     # La banca è un filtro del portafoglio, non una limitazione delle fonti.
     if history is None and valid_isin and not nonfund:
         for provider, fetch in (
-            ('Yahoo per ISIN', lambda: yahoo_serie(isin, start, end)),
-            ('FT', lambda: ft_serie(isin, start, end, asset.get('currency', 'EUR'))),
+            ('Yahoo per ISIN', lambda: yahoo_serie(isin, start, end, currency, exclude=ticker)),
+            ('FT', lambda: ft_serie(isin, start, end, currency)),
         ):
             try:
                 raw, candidate_source = fetch()
@@ -70,7 +73,7 @@ def fetch_asset(asset, baseline, end):
                 break
             except Exception as exc:
                 errors.append(provider + ': ' + str(exc)[:180])
-        if history is None and asset.get('bank') != 'za':
+        if history is None:
             try:
                 history = normalize_history(fetch_nav(isin, start, end))
                 source = 'Morningstar'
@@ -80,7 +83,7 @@ def fetch_asset(asset, baseline, end):
         errors.append('Obbligazione/certificato: recupero per ISIN non supportato dalle fonti fondi. '
                       'Serve un ticker verificato o una fonte dedicata; il link non viene letto come quotazione.')
     row = {'Titolo': asset['name'], 'Banca': asset['bank'], 'ISIN': isin,
-           'Valuta': asset.get('currency', 'EUR'), 'Prezzo iniziale': None,
+           'Valuta': currency, 'Prezzo iniziale': None,
            'Ultimo prezzo': None, 'Data iniziale': None, 'Data prezzo': None,
            'Variazione %': None, 'Fonte': source, 'Stato': 'Non disponibile',
            'Dettaglio': '; '.join(errors), 'Link fonte': asset.get('url', '')}

@@ -9,7 +9,7 @@ from asset_catalog import BANKS, editor_rows, assets_from_rows, save_assets, loa
 
 st.set_page_config(page_title='Finance · IG / mm / za / ing', page_icon='📊', layout='wide')
 st.title('Finance · Cruscotto')
-st.caption('Fondi IG / mm / za / ing · Yahoo e FT per ISIN · Morningstar come fonte alternativa per IG, mm e ing')
+st.caption('Fondi IG / mm / za / ing · Yahoo, FT e Morningstar · Verifica dell’ISIN per le quotazioni')
 catalog_path = Path(__file__).with_name('titoli.json')
 assets = json.loads(catalog_path.read_text(encoding='utf-8'))
 asset_pages = {
