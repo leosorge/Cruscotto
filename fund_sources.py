@@ -1,7 +1,6 @@
 """Yahoo ISIN search and FT fallback adapted from Untitled64."""
-from html import unescape
 import io
-import re
+import json
 from datetime import timedelta
 import requests
 import pandas as pd
@@ -53,10 +52,12 @@ def ft_serie(isin, start, end, currency="EUR"):
     labels = document.xpath("//*[contains(@class, 'mod-tearsheet-overview__header__symbol')]")
     if {label.text_content().strip() for label in labels} != {symbol}:
         raise ValueError(f"Simbolo {symbol} non confermato nella scheda FT")
-    identifiers = set(re.findall(r'"xid"\s*:\s*"?(\d+)"?', unescape(page.text)))
-    if len(identifiers) != 1:
-        raise ValueError("Identificativo storico FT assente o ambiguo")
-    xid, = identifiers
+    configs = document.xpath("//*[@data-module-name='HistoricalPricesApp']/@data-mod-config")
+    if len(configs) != 1:
+        raise ValueError("Configurazione dello storico FT assente o ambigua")
+    xid = str(json.loads(configs[0]).get("symbol", ""))
+    if not xid.isdecimal():
+        raise ValueError("Identificativo storico FT assente")
     ajax = "https://markets.ft.com/data/equities/ajax/get-historical-prices"
     response = requests.get(ajax, params={"startDate": start.strftime("%Y/%m/%d"),
                                          "endDate": end.strftime("%Y/%m/%d"),
